@@ -1,6 +1,16 @@
 #!/bin/zsh
 start_time="$(date +%s)"
 
+# if you do a 'rm *', Zsh will give you a sanity check!
+setopt RM_STAR_WAIT
+
+# allows you to type Bash style comments on your command line
+# good 'ol Bash
+setopt interactivecomments
+
+# Path to your oh-my-zsh installation.
+export ZSH=/Users/johan/.oh-my-zsh
+
 # Antigen — A zsh plugin manager
 source ~/antigen.zsh
 
@@ -13,7 +23,6 @@ antigen bundles <<EOBUNDLES
 brew
 lein
 pip
-node
 
 # Guess what to install when running an unknown command.
 command-not-found
@@ -44,13 +53,14 @@ EOBUNDLES
 
 # Load the prompt theme.
 # antigen theme prose
-antigen theme caiogondim/bullet-train-oh-my-zsh-theme bullet-train
+antigen bundle mafredri/zsh-async
+antigen bundle sindresorhus/pure
 
 # Vim like bindings plugin. Need to run after theme, so mode indicator
 # can be set, if the theme didn't already set it.
-# antigen-bundle sharat87/zsh-vim-mode
-# ZSH_VIM_MODE_NORMAL_MAP=^k
-# antigen bundle ~/labs/zsh-vim-mode --no-local-clone
+antigen-bundle sharat87/zsh-vim-mode
+ZSH_VIM_MODE_NORMAL_MAP=^k
+antigen bundle ~/labs/zsh-vim-mode --no-local-clone
 
 # Tell Antigen that we're done.
 antigen apply
@@ -65,5 +75,9 @@ PATH="/usr/bin:/bin:/usr/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/opt:/usr/lo
 
 eval "$(pyenv init -)"
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
-source /usr/local/opt/autoenv/activate.sh
+# source /usr/local/opt/autoenv/activate.sh
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+DEFAULT_USER=$USER
+
+# 10ms for key sequences
+KEYTIMEOUT=1
