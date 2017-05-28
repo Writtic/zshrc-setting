@@ -11,62 +11,45 @@ setopt interactivecomments
 # Path to your oh-my-zsh installation.
 export ZSH=/Users/johan/.oh-my-zsh
 
-# Antigen — A zsh plugin manager
-source ~/antigen.zsh
+autoload -Uz compinit
+compinit
 
-# Load the oh-my-zsh's library.
-antigen use oh-my-zsh
+# load zgen
+source "~/.zgen/zgen.zsh"
 
-# Bundles from the default repo declared above.
-antigen bundles <<EOBUNDLES
 
-brew
-lein
-pip
+if ! zgen saved; then
+    echo "Creating a zgen save"
 
-# Guess what to install when running an unknown command.
-command-not-found
+    # plugins
+    zgen oh-my-zsh plugins/git
+    zgen oh-my-zsh plugins/osx
+    zgen oh-my-zsh plugins/pip
+    zgen oh-my-zsh plugins/python
+    zgen oh-my-zsh plugins/sudo
+    zgen oh-my-zsh plugins/brew
+    zgen oh-my-zsh plugins/tmux
+    zgen oh-my-zsh plugins/command-not-found
 
-# Helper for extracting different types of archives.
-extract
+    # bulk load
+    zgen loadall <<EOPLUGINS
 
-# Help working with version control systems.
-git
-gitfast
+    chrissicool/zsh-256color
+    srijanshetty/docker-zsh
 
-# nicoulaj's moar completion files for zsh
-zsh-users/zsh-completions src
+    zsh-users/zsh-history-substring-search
+    zsh-users/zsh-syntax-highlighting
+    zsh-users/zsh-completions src
 
-# ZSH port of Fish shell's history search feature.
-zsh-users/zsh-history-substring-search
+    mafredri/zsh-async
+    sindresorhus/pure
 
-# Syntax highlighting bundle.
-zsh-users/zsh-syntax-highlighting
-
-# Auto update Antigen.
-unixorn/autoupdate-antigen.zshplugin
-
-# Auto Python Environment.
-kennethreitz/autoenv
-
-EOBUNDLES
-
-# Load the prompt theme.
-# antigen theme prose
-antigen bundle mafredri/zsh-async
-antigen bundle sindresorhus/pure
-
-# Vim like bindings plugin. Need to run after theme, so mode indicator
-# can be set, if the theme didn't already set it.
-antigen-bundle sharat87/zsh-vim-mode
-ZSH_VIM_MODE_NORMAL_MAP=^k
-antigen bundle ~/labs/zsh-vim-mode --no-local-clone
-
-# Tell Antigen that we're done.
-antigen apply
+EOPLUGINS
+    zgen save
+fi
 
 end_time="$(date +%s)"
-echo Loading Antigen: $((end_time - start_time)) seconds
+echo Loading zgen: $((end_time - start_time)) seconds
 echo Complete!
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
