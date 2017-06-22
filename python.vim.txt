@@ -108,9 +108,9 @@ syn keyword pythonBoolean   True False None
 
 " Parameters
 syn region pythonVars start="(" end=")" contained contains=pythonParameters transparent keepend
-syn match pythonParameters "[^,|^*]*" contained contains=pythonParam,pythonBrackets skipwhite
+syn match pythonParameters "[^,]*" contained contains=pythonParam,pythonBrackets skipwhite
 syn match pythonParam "=[^,]*" contained contains=pythonExtraOperator,pythonBuiltinFunc,pythonConstant,pythonStatement,pythonNumber,pythonString skipwhite 
-syn match pythonBrackets "[(|)]" contained skipwhite
+syn match pythonBrackets "[(|)|\[|\]|\{|\}]" contained skipwhite
 
 " Class
 syn region pythonClassVars start="(" end=")" contained contains=pythonClassParameters transparent keepend
