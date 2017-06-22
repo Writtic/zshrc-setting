@@ -57,6 +57,9 @@ Plugin 'scrooloose/syntastic'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'sheerun/vim-polyglot'
 Plugin 'nvie/vim-flake8'
+Plugin 'joshdick/onedark.vim'
+Plugin 'gerw/vim-HiLinkTrace'
+Plugin 'jeetsukumaran/vim-buffergator'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -76,10 +79,13 @@ filetype plugin indent on    " required
 " vim-flake8
 autocmd FileType python map <buffer> <F10> :call Flake8()<CR>
 autocmd FileType make setlocal noexpandtab
-set t_Co=256
-set background=dark
-colorscheme solarized
-let g:solarized_contrast = "low"
+let g:onedark_termcolors=256
+colorscheme onedark 
+if (has("termguicolors"))
+    set termguicolors
+endif
+
+let g:onedark_terminal_italics=1
 " YouCompleteMe Fix
 let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 let g:flake8_show_in_file=1     " show
@@ -90,9 +96,11 @@ nnoremap <F2> :set invpaste paste?<CR>
 set pastetoggle=<F2>
 let mapleader = ","
 let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|ico|git|svn))$'
+
 " for vim-airline
 let g:airline#extensions#tabline#enabled = 1 " turn on buffer list
-let g:airline_theme = 'solarized'
+let g:airline#extensions#tabline#fnamemod = ':t' " print only filename on the tap
+let g:airline_theme = 'onedark'
 set laststatus=2 " turn on bottom bar
 " set noshowmode
 
@@ -106,6 +114,26 @@ nnoremap <leader>nt <ESC>:NERDTree<CR>
 nnoremap <leader>q :bp<CR>
 nnoremap <leader>w :bn<CR>
 
+" CtrlP setting
+let g:ctrlp_working_path_mode = 'r'
+nmap <leader>p :CtrlP<cr>
+nmap <leader>bb :CtrlPBuffer<cr>
+nmap <leader>bm :CtrlPMixed<cr>
+nmap <leader>bs :CtrlPMRU<cr>
+
+" Buffergator setting
+" 화면 오른쪽을 사용
+let g:buffergator_viewport_split_policy = 'R'
+" 단축키를 직접 지정하겠음
+let g:buffergator_suppress_keymaps = 1
+" Looper buffers
+"let g:buffergator_mru_cycle_loop = 1
+nmap <leader>qq :BuffergatorMruCyclePrev<cr>
+nmap <leader>ww :BuffergatorMruCycleNext<cr>
+nmap <leader>bl :BuffergatorOpen<cr>
+nmap <leader>T :enew<cr>
+nmap <leader>bq :bp <BAR> bd #<cr>
+
 " Clipboard copy/paste
 map <F3> "+Y<CR>
 map <F4> "+gP<CR>
@@ -116,21 +144,20 @@ imap <F4> <ESC>"+gP<CR>
 imap <C-D> <C-0>x
 
 " Key Setting - resize windows
-nnoremap <silent> <Leader>= :exe "resize +3"<CR>
-nnoremap <silent> <Leader>- :exe "resize -3"<CR>
-nnoremap <silent> <Leader>] :exe "vertical resize +8"<CR>
-nnoremap <silent> <Leader>[ :exe "vertical resize -8"<CR>
+nnoremap <silent> <leader>= :exe "resize +3"<CR>
+nnoremap <silent> <leader>- :exe "resize -3"<CR>
+nnoremap <silent> <leader>] :exe "vertical resize +8"<CR>
+nnoremap <silent> <leader>[ :exe "vertical resize -8"<CR>
 
-nnoremap <silent> <Leader>+ :exe "resize " . (winheight(0) * 3/2)<CR>
-nnoremap <silent> <Leader>_ :exe "resize " . (winheight(0) * 2/3)<CR>
-nnoremap <silent> <Leader>} :exe "vertical resize " . (winheight(0) * 3/2)<CR>
-
-nnoremap <silent> <Leader>{ :exe "vertical resize " . (winheight(0) * 2/3)<CR>
+nnoremap <silent> <leader>+ :exe "resize " . (winheight(0) * 3/2)<CR>
+nnoremap <silent> <leader>_ :exe "resize " . (winheight(0) * 2/3)<CR>
+nnoremap <silent> <leader>} :exe "vertical resize " . (winheight(0) * 3/2)<CR>
+nnoremap <silent> <leader>{ :exe "vertical resize " . (winheight(0) * 2/3)<CR>
 
 " Vim search highlighting
 nnoremap <C-l> :nohlsearch<CR><C-l>
-nnoremap <leader>i :set incsearch!<CR>
-nnoremap <leader>h :set hlsearch!<CR>
+" nnoremap <leader>i :set incsearch!<CR>
+" nnoremap <leader>h :set hlsearch!<CR>
 autocmd InsertEnter * :setlocal nohlsearch
 autocmd InsertLeave * :setlocal hlsearch
 
@@ -144,4 +171,8 @@ nnoremap <leader>gg:YcmCompleter GoToImprecise<CR>
 nnoremap <leader>d:YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>t:YcmCompleter GetType<CR>
 nnoremap <leader>p:YcmCompleter GetParent<CR>
+
+"p python-syntax option
+let python_highlight_all = 1
+
 
