@@ -10,13 +10,6 @@ if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'python') == -1
 "     This version of the syntax file works better for 2.x and 3.x without
 "     having to switch modes.
 "
-" Thanks:
-"
-"    Jeroen Ruigrok van der Werven
-"        for the idea of highlighting for erroneous operators
-"    Pedro Algarvio
-"        for the patch to enable spell checking only for the right spots
-"        (strings and comments)
 
 "
 " Options:
@@ -95,10 +88,11 @@ syn keyword pythonStatement	async await
 syn keyword pythonStatement	with nonlocal
 syn keyword pythonStatement	def nextgroup=pythonFunction skipwhite
 syn keyword pythonClassStatement class nextgroup=pythonClass skipwhite
+" syn match   pythonFunction	"[a-zA-Z_][a-zA-Z0-9_]*" display contained
 syn match   pythonFunction
       \ "\%(\%(def\s\|@\)\s*\)\@<=\h\%(\w\|\.\)*" contained nextgroup=pythonVars
 syn match   pythonClass
-      \ "\%(\%(class\s\|@\)\s*\)\@<=\h\%(\w\|\.\)*" contained nextgroup=pythonClassVars
+      \ "\%(\%(class\|@\)\s*\)\@<=\h\%(\w\|\.\)*" contained nextgroup=pythonClassVars
 syn keyword pythonRepeat	for while
 syn keyword pythonConditional	if elif else
 syn keyword pythonImport	import from as
@@ -108,9 +102,13 @@ syn keyword pythonBoolean   True False None
 
 " Parameters
 syn region pythonVars start="(" end=")" contained contains=pythonParameters transparent keepend
-syn match pythonParameters "[^,]*" contained contains=pythonParam,pythonBrackets skipwhite
-syn match pythonParam "=[^,]*" contained contains=pythonExtraOperator,pythonBuiltinFunc,pythonConstant,pythonStatement,pythonNumber,pythonString skipwhite 
+syn match pythonParameters "[^,]*" contained contains=pythonParam,pythonBrackets,pythonEqual,pythonStar,pythonString skipwhite
+syn match pythonParam "(=[^,]*" 
+       \ contained contains=pythonExtraOperator,pythonBuiltinFunc,pythonConstant,pythonStatement,pythonNumber,pythonString,pythonBrackets,pythonEqual,pythonStar skipwhite 
 syn match pythonBrackets "[(|)|\[|\]|\{|\}]" contained skipwhite
+" Decorator (new in Python 2.4)
+syn match   pythonDecorator  "@" display nextgroup=pythonDottedName
+syn match   pythonDottedName "[a-zA-Z_][a-zA-Z0-9_]*\%(\.[a-zA-Z_][a-zA-Z0-9_]*\)*" display contained nextgroup=pythonVars
 
 " Class
 syn region pythonClassVars start="(" end=")" contained contains=pythonClassParameters transparent keepend
@@ -122,8 +120,8 @@ syn match pythonSelf "\(\W\|^\)\zsself\ze\."
 " Print keyword but only if not used as function
 syn match pythonStatement "\<print\>\((\|,\|*=\)\@!" display
 
-" Decorators (new in Python 2.4)
-syn match   pythonDecorator	"@" display nextgroup=pythonFunction skipwhite
+syn match   pythonStar	"*" display skipwhite
+syn match   pythonEqual "=" display skipwhite
 
 " Comments
 syn match   pythonComment	"#.*$" display contains=pythonTodo,@Spell
@@ -324,7 +322,7 @@ if version >= 508 || !exists("did_python_syn_inits")
   HiLink pythonOperator		Operator
   HiLink pythonBoolean      Boolean
 
-  HiLink pythonDecorator	Define
+  HiLink pythonDecorator	Function
 
   HiLink pythonComment		Comment
   HiLink pythonCoding		Comment
@@ -365,14 +363,16 @@ if version >= 508 || !exists("did_python_syn_inits")
   HiLink pythonBuiltinFunc	Function
 
   HiLink pythonExClass	  Function
-
   HiLink pythonClass      Structure
   HiLink pythonParameters Boolean
-  HiLink pythonClassParameters Function
   HiLink pythonParam      Normal
   HiLink pythonSelf       Identifier
+  HiLink pythonStar       Normal
+  HiLink pythonEqual      Normal
   HiLink pythonKeys       Boolean
   HiLink pythonNamespace  Identifier
+  HiLink pythonClassParameters Function
+  HiLink pythonDottedName Function
 
   delcommand HiLink
 endif
@@ -380,6 +380,5 @@ endif
 let b:current_syntax = "python"
 
 endif
-
 
 
